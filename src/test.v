@@ -15,7 +15,7 @@ module test;
     wire y;
 
     top top(
-        .clk(clk), .y(y)
+        .clk(clk), .clki(clk), .y(y)
     );
 
 endmodule

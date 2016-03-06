@@ -2,7 +2,7 @@ module dsm(clk, pcm, y);
     input clk;
     input[7:0] pcm;
     output y;
-    reg y;
+    reg y = 0;
 
     reg[9:0] acc1 = 0;
     reg[9:0] acc2 = 0;
