@@ -4,7 +4,7 @@ module test;
     initial begin
         $dumpfile("test.vcd");
         $dumpvars(0, test);
-        #10000 $finish;
+        #1000000 $finish;
     end
 
     reg clk = 0;
@@ -12,10 +12,10 @@ module test;
         #5 clk <= ~clk;
     end
 
-    wire[7:0] pcm;
+    wire y;
 
     top top(
-        .clk(clk), .pcm(pcm)
+        .clk(clk), .y(y)
     );
 
 endmodule
