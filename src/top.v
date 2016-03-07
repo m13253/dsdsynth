@@ -9,8 +9,8 @@ module top(clk, clki, clko, y);
     reg[23:0] count = 0;
 
     wire[7:0] pcm;
-    sin sin(count[23:16], pcm);
-    dsm dsm(count[6], pcm, y);
+    sin sin(count[16:8], pcm);
+    dsm dsm(clk, pcm, y);
 
     always @(posedge clk) begin
         count <= count + 1;
