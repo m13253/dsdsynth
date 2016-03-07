@@ -6,13 +6,19 @@ module top(clk, clki, clko, y);
 
     assign clko = clki;
 
-    reg[23:0] count = 0;
+    reg[7:0] phase = 0;
+    reg[8:0] freqdev = 0;
 
     wire[7:0] pcm;
-    sin sin(count[16:8], pcm);
+    sin sin(phase, pcm);
     dsm dsm(clk, pcm, y);
 
     always @(posedge clk) begin
-        count <= count + 1;
+        if(freqdev != 298) // 20MHz / (262Hz * 256samp/round)
+            freqdev <= freqdev + 1;
+        else begin
+            freqdev <= 0;
+            phase <= phase + 1;
+        end
     end
 endmodule
