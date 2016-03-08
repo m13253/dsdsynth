@@ -4,7 +4,6 @@ module dsm(clk, pcm, y);
     input clk; // CLK_FREQ
     input signed[`PCM_QUANT-1:0] pcm;
     output y;
-    reg y = 0;
 
     reg signed[`PCM_QUANT+1:0] acc1 = 0;
     reg signed[`PCM_QUANT+1:0] acc2 = 0;
@@ -14,6 +13,6 @@ module dsm(clk, pcm, y);
         acc1 = acc1 + pcm + feedback;
         acc2 = acc2 + acc1 + feedback;
         feedback <= acc2[`PCM_QUANT+1] ? (1<<(`PCM_QUANT-1))-1 : 1-(1<<(`PCM_QUANT-1));
-        y <= acc2[`PCM_QUANT+1];
     end
+    assign y = acc2[`PCM_QUANT+1];
 endmodule
