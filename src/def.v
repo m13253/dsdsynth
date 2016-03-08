@@ -1,0 +1,4 @@
+`define CLK_FREQ 20000000
+
+`define SINE_QUANT 8
+`define PCM_QUANT 8

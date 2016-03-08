@@ -1,10 +1,10 @@
-`timescale 1us/1us
+`timescale 10ns/1ns
 
 module test;
     initial begin
         $dumpfile("test.vcd");
         $dumpvars(0, test);
-        #1000000 $finish;
+        #10000000 $finish;
     end
 
     reg clk = 0;
@@ -15,7 +15,7 @@ module test;
     wire y;
 
     top top(
-        .clk(clk), .clki(clk), .y(y)
+        .clk(clk), .ena(1'b1), .y(y)
     );
 
 endmodule

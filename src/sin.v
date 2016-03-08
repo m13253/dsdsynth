@@ -1,12 +1,14 @@
-module sin(grad, y);
-    input[7:0] grad; // 0 -> 0, 256 -> 2*pi
-    output[7:0] y; // -1 -> -255, 1 -> 255
+`include "def.v"
 
-    reg[7:0] sin_table[63:0];
+module sin(grad, y);
+    input[`PCM_QUANT-1:0] grad; // 0 -> 0, 256 -> 2*pi
+    output signed[`PCM_QUANT-1:0] y; // -1 -> -255, 1 -> 255
+
+    reg[`PCM_QUANT-1:0] sin_table[(1<<(`SINE_QUANT-2))-1:0];
     initial
         $readmemh("sin_table.hex", sin_table);
 
-    wire[7:0] abs;
-    assign abs = sin_table[{grad[6] ? ~grad[5:0] : grad[5:0]}];
-    assign y = grad[7] ? ~abs : abs;
+    wire[`PCM_QUANT-1:0] abs;
+    assign abs = sin_table[{grad[`SINE_QUANT-2] ? ~grad[`SINE_QUANT-3:0] : grad[`SINE_QUANT-3:0]}];
+    assign y = grad[`SINE_QUANT-1] ? ~abs : abs;
 endmodule
