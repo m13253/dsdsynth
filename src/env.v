@@ -5,7 +5,7 @@ module env(clk, clr, y);
     input clk; // ENVELOPE_FREQ
     input clr;
     output[`PCM_QUANT-2:0] y;
-    
+
     reg[`PCM_QUANT-2:0] env_table[3*`ENVELOPE_FREQ-1:0];
     initial
         $readmemh("env_table.hex", env_table);
