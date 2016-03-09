@@ -5,7 +5,7 @@ module top(clk, ena, y);
     input ena;
     output y;
 
-    reg[16:0] freqdiv = 0;
+    reg[15:0] freqdiv = 0;
     always @(posedge clk)
         freqdiv <= freqdiv +1;
 
