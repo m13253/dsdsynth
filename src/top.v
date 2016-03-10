@@ -1,9 +1,10 @@
 `include "def.v"
 
-module top(clk, ena, y);
+module top(clk, ena, y, y1);
     input clk;
     input ena;
     output y;
+    output y1;
 
     reg[15:0] freqdiv = 0;
     always @(posedge clk)
@@ -19,6 +20,7 @@ module top(clk, ena, y);
     note note(clk, attack, cyc, note_out);
     env env(freqdiv[15], attack, env_out);
     assign master = (note_out * $signed({1'b0, env_out}));
-    dsm dsm(clk, master >>> (`PCM_QUANT+1), pdm);
+    dsm dsm(clk, master >>> (`PCM_QUANT), pdm);
     assign y = ena & pdm;
+    assign y1 = pdm;
 endmodule

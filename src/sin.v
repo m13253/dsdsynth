@@ -2,7 +2,7 @@
 
 module sin(grad, y);
     input[`PCM_QUANT-1:0] grad; // 0 -> 0, 256 -> 2*pi
-    output signed[`PCM_QUANT-1:0] y; // -1 -> -255, 1 -> 255
+    output signed[`PCM_QUANT-1:0] y; // -127 -> -1, 127 -> 1
 
     reg[`PCM_QUANT-1:0] sin_table[(1<<(`SINE_QUANT-2))-1:0];
     initial
