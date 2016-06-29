@@ -1,24 +1,36 @@
-`include "def.v"
+`timescale 1ns/1ns
 
-module top(clk, ena, y);
-    input clk;
-    input ena;
-    output y;
+module top(
+    input clk,
+    input [3:0] rst,
+    output hsync,
+    output vsync,
+    output r,
+    output g,
+    output b,
+    output y,
+    output [6:0] led
+);
+    wire pll = clk;
+    //vgapll vgapll(.inclk0(clk), .c0(pll));
+    wire [10:0] pos;
+    reg [7:0] char;
+    always @(posedge pll)
+        char <= pos[0] ? 65 : (128+66);
+    vga vga(pll, hsync, vsync, r, g, b, pos, char);
 
-    reg[15:0] freqdiv = 0;
-    always @(posedge clk)
-        freqdiv <= freqdiv +1;
+    wire [15:0] pcm;
+    reg [31:0] cnt = 0;
+    always @(posedge clk) cnt <= cnt + 1;
+    synth synth(
+        clk,
+        !rst[0], !rst[1], !rst[2], !rst[3],
+        60, 62, 64, 65,
+        pcm
+    );
+    dsm dsm(clk, pcm, y);
+    
+    assign led[6] = pcm[15];
+    assign led[5:0] = pcm[15] ? -pcm[14:9] : pcm[14:9];
 
-    wire attack;
-    wire[15:0] cyc;
-    score score(freqdiv[15], cyc, attack);
-    wire signed[`PCM_QUANT-1:0] note_out;
-    wire signed[`PCM_QUANT-2:0] env_out;
-    wire signed[2*`PCM_QUANT-1:0] master;
-    wire pdm;
-    note note(clk, attack, cyc, note_out);
-    env env(freqdiv[15], attack, env_out);
-    assign master = (note_out * $signed({1'b0, env_out}));
-    dsm dsm(clk, master >>> (`PCM_QUANT+1), pdm);
-    assign y = ena & pdm;
 endmodule
