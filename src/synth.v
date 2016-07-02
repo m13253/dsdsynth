@@ -8,6 +8,7 @@ module synth(
     input [6:0] key1,
     input [6:0] key2,
     input [6:0] key3,
+    input [3:0] mute,
     output signed [15:0] pcm
 );
     reg signed [7:0] cycle [63:0];
@@ -46,9 +47,9 @@ module synth(
         for(i = 0; i < 4; i = i+1) begin : cyc_for
             always @(posedge clks[i], posedge rsts[i]) begin
                 if(rsts[i])
-                    cycdiv[i] <= tune[keys[i]];
+                    cycdiv[i] <= (tune[keys[i]]>>1)-1; // Workaround: the beeper sounds better at 2x freq
                 else if(cycdiv[i] == 0)
-                    cycdiv[i] <= tune[keys[i]];
+                    cycdiv[i] <= (tune[keys[i]]>>1)-1;
                 else
                     cycdiv[i] <= cycdiv[i]-1;
                 if(rsts[i])
@@ -90,7 +91,7 @@ module synth(
     generate
         for(i = 0; i < 4; i = i+1) begin : pcms_for
             always @(negedge clks[i])
-                pcms[i] <= pcmi;
+                pcms[i] <= mute[i] ? 0 : pcmi;
         end
     endgenerate
 
@@ -100,5 +101,8 @@ module synth(
     wire [16:0] envdiv0 = envdiv[0];
     wire signed [15:0] pcm0 = pcms[0];
 
-    assign pcm = $signed(pcms[0] + pcms[1] + pcms[2] + pcms[3]) >>> 1;
+    assign pcm = {pcms[0][15], pcms[0][15], pcms[0][15:2]}
+               + {pcms[1][15], pcms[1][15], pcms[1][15:2]}
+               + {pcms[2][15], pcms[2][15], pcms[2][15:2]}
+               + {pcms[3][15], pcms[3][15], pcms[3][15:2]};
 endmodule

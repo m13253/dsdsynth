@@ -2,30 +2,40 @@
 
 module top(
     input clk,
-    input [3:0] rst,
+    input rst,
+    input [3:0] mute,
     output hsync,
     output vsync,
     output r,
     output g,
     output b,
     output y,
-    output [6:0] led
+    output [6:0] led,
+    output [7:0] seg
 );
-    wire pll = clk;
-    //vgapll vgapll(.inclk0(clk), .c0(pll));
     wire [10:0] pos;
     reg [7:0] char;
-    always @(posedge pll)
-        char <= pos[0] ? 65 : (128+66);
-    vga vga(pll, hsync, vsync, r, g, b, pos, char);
+    always @(posedge clk)
+        char <= {pos[7], pos[6:0] >= 32 ? pos[6:0] : 7'd32};
+    vga vga(clk, hsync, vsync, r, g, b, pos, char);
+    
+    wire track_rst [3:0];
+    wire [6:0] track_key [3:0];
+    scores scores(
+        .clk(clk), .grst(!rst),
+        .rst0(track_rst[0]), .rst1(track_rst[1]), .rst2(track_rst[2]), .rst3(track_rst[3]),
+        .key0(track_key[0]), .key1(track_key[1]), .key2(track_key[2]), .key3(track_key[3]),
+        .pos(0), .seg(seg)
+    );
 
     wire [15:0] pcm;
     reg [31:0] cnt = 0;
     always @(posedge clk) cnt <= cnt + 1;
     synth synth(
         clk,
-        !rst[0], !rst[1], !rst[2], !rst[3],
-        60, 62, 64, 65,
+        track_rst[0], track_rst[1], track_rst[2], track_rst[3],
+        track_key[0], track_key[1], track_key[2], track_key[3],
+        ~mute,
         pcm
     );
     dsm dsm(clk, pcm, y);

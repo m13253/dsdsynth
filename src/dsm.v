@@ -3,7 +3,8 @@ module dsm(
     input signed [15:0] pcm,
     output y
 );
-    wire signed[31:0] compress = {{16{pcm[13]}}, pcm[13:0], 2'b0};
+    //wire signed[31:0] compress = {{16{pcm[13]}}, pcm[13:0], 2'b0};
+    wire signed[31:0] compress = {{16{pcm[14]}}, pcm[14:0], 1'b0};
     reg signed[31:0] acc1 = 0;
     reg signed[31:0] acc2 = 0;
     reg signed[31:0] feedback = 0;
