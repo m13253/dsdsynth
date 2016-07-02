@@ -18,7 +18,7 @@ module top(
     always @(posedge clk)
         char <= {pos[7], pos[6:0] >= 32 ? pos[6:0] : 7'd32};
     vga vga(clk, hsync, vsync, r, g, b, pos, char);
-    
+
     wire track_rst [3:0];
     wire [6:0] track_key [3:0];
     scores scores(
@@ -39,7 +39,7 @@ module top(
         pcm
     );
     dsm dsm(clk, pcm, y);
-    
+
     assign led[6] = pcm[15];
     assign led[5:0] = pcm[15] ? -pcm[14:9] : pcm[14:9];
 

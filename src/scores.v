@@ -16,7 +16,7 @@ module scores(
     reg [14:0] div = 0;
     always @(posedge clk)
         div <= div+1;
-        
+
     reg [6:0] note0 [2047:0];
     initial
         $readmemh("../score/note0.hex", note0);
@@ -44,8 +44,8 @@ module scores(
 
     wire [15:0] addr0 [3:0];
     wire [15:0] addr1 [3:0];
-    reg [6:0] note [3:0]; 
-    reg [15:0] dur [3:0]; 
+    reg [6:0] note [3:0];
+    reg [15:0] dur [3:0];
     always @(posedge div[13]) begin
         note[0] <= note0[addr0[0]];
         note[1] <= note1[addr0[1]];
@@ -56,9 +56,9 @@ module scores(
         dur[2] <= dur2[addr1[2]];
         dur[3] <= dur3[addr1[3]];
     end
-    
+
     assign seg = addr0[0][7:0];
-    
+
     score score0(.clk(div[13]), .grst(grst), .addr0(addr0[0]), .addr1(addr1[0]), .note(note[0]), .dur(dur[0]), .rst(rst0), .key(key0));
     score score1(.clk(div[13]), .grst(grst), .addr0(addr0[1]), .addr1(addr1[1]), .note(note[1]), .dur(dur[1]), .rst(rst1), .key(key1));
     score score2(.clk(div[13]), .grst(grst), .addr0(addr0[2]), .addr1(addr1[2]), .note(note[2]), .dur(dur[2]), .rst(rst2), .key(key2));
