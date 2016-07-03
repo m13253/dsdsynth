@@ -14,9 +14,7 @@ module top(
     output [7:0] seg
 );
     wire [10:0] pos;
-    reg [7:0] char;
-    always @(posedge clk)
-        char <= {pos[7], pos[6:0] >= 32 ? pos[6:0] : 7'd32};
+    wire [7:0] char;
     vga vga(clk, hsync, vsync, r, g, b, pos, char);
 
     wire track_rst [3:0];
@@ -25,7 +23,7 @@ module top(
         .clk(clk), .grst(!rst),
         .rst0(track_rst[0]), .rst1(track_rst[1]), .rst2(track_rst[2]), .rst3(track_rst[3]),
         .key0(track_key[0]), .key1(track_key[1]), .key2(track_key[2]), .key3(track_key[3]),
-        .pos(0), .seg(seg)
+        .pos(pos), .char(char), .seg(seg)
     );
 
     wire [15:0] pcm;

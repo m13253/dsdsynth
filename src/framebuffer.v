@@ -53,14 +53,14 @@ module framebuffer(
             2*80+9, 3*80+9, 4*80+9, 5*80+9: char <= "0" | 8'h80;
             2*80+10, 3*80+10, 4*80+10, 5*80+10: char <= "x" | 8'h80;
             /* Note ID */
-            2*80+11: char <= {1'b1, hex00};
-            2*80+12: char <= {1'b1, hex01};
-            3*80+11: char <= {1'b1, hex10};
-            3*80+12: char <= {1'b1, hex11};
-            4*80+11: char <= {1'b1, hex20};
-            4*80+12: char <= {1'b1, hex21};
-            5*80+11: char <= {1'b1, hex30};
-            5*80+12: char <= {1'b1, hex31};
+            2*80+11: char <= hex00 | 8'h80;
+            2*80+12: char <= hex01 | 8'h80;
+            3*80+11: char <= hex10 | 8'h80;
+            3*80+12: char <= hex11 | 8'h80;
+            4*80+11: char <= hex20 | 8'h80;
+            4*80+12: char <= hex21 | 8'h80;
+            5*80+11: char <= hex30 | 8'h80;
+            5*80+12: char <= hex31 | 8'h80;
             default: char <= " ";
         endcase
 endmodule
